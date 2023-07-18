@@ -3,6 +3,7 @@ import datetime
 import uuid
 from flask import Flask, jsonify, request
 from flask_cors import CORS
+import git
 #import schedule
 #import time
 
@@ -50,6 +51,15 @@ def get_string():
   #print('Here')
   return jsonify({'result': token})
   #return('<p>Hello</p>')
+
+@app.route('/git_update', methods=['POST'])
+def git_update():
+    repo = git.Repo('./orbe')
+    origin = repo.remotes.origin
+    repo.create_head('main',
+                     origin.refs.main).set_tracking_branch(origin.refs.main).checkout()
+    origin.pull()
+    return '', 200
 
 #app.run(host='0.0.0.0', port = 8080)
 
