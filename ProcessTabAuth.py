@@ -21,11 +21,8 @@ username = "m.setit@gmail.com"
 #TOL or Tableau server name. SSL is highly recommeded
 tableauservername = "https://10ax.online.tableau.com/t/setitsandboxdev427435/"
 
-# Define a function to refresh the token
-def refresh_token():
-    global token
-    # Refresh the token content here
-    token = jwt.encode(
+
+token = jwt.encode(
   {
     'iss': connectedAppClientId,
     'exp': datetime.datetime.utcnow() + datetime.timedelta(minutes=10),
@@ -41,36 +38,22 @@ def refresh_token():
     'iss': connectedAppClientId
   })
 
-# Function to demonstrate using the token
-def another_function(token):
-    return token
-
-# Schedule the token refresh every 8 minutes
-schedule.every(8).minutes.do(refresh_token)
-
 #########
 app = Flask(__name__)
 CORS(app)
 
+
 @app.route('/', methods = ['GET', 'POST'])
 #@app.route('/get_string')
 def get_string():
-
   # Call your Python function and get the string result
   text = str(request.args.get('input')) # Requests the ?input= 1
   # result = your_python_function(data)
-  # Add a loop to run the scheduled tasks
-  i=0
-  while True:
-    schedule.run_pending()
-    time.sleep(8*60+30)
-    # Return the result as JSON
-    #print('Here')
-    #return jsonify({'result': token})
-    another_function(token)
-    i+=1
-    print(i)
-    #return('<p>Hello</p>')
+  
+  # Return the result as JSON
+  #print('Here')
+  return jsonify({'result': token})
+  #return('<p>Hello</p>')
 
 
 #app.run(host='0.0.0.0', port = 8080)
